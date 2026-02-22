@@ -159,11 +159,11 @@ const Analytics = () => {
               {t("dailyTrend")}
             </h2>
             <div
-              className="w-full min-w-0"
-              style={{ height: CHART_HEIGHT, minHeight: CHART_HEIGHT }}
+              className="w-full min-w-0 h-[280px]"
+              style={{ height: CHART_HEIGHT, minHeight: CHART_HEIGHT, width: "100%" }}
             >
               {!hasChartData ? (
-                <div className="flex h-full items-center justify-center rounded-lg border border-dashed border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex h-full w-full items-center justify-center rounded-lg border border-dashed border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
                   {t("noDataAvailable")}
                 </div>
               ) : (

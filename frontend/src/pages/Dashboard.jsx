@@ -134,9 +134,12 @@ const Dashboard = () => {
           <h2 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-5">
             {t("dailyTrend")}
           </h2>
-          <div className="w-full" style={{ height: 300, minHeight: 300 }}>
+          <div
+            className="w-full min-w-0 h-[300px]"
+            style={{ height: 300, minHeight: 300, width: "100%" }}
+          >
             {dayData.length === 0 ? (
-              <div className="flex h-full items-center justify-center text-sm text-gray-500 dark:text-gray-400 rounded-lg border border-dashed border-gray-200 dark:border-gray-700">
+              <div className="flex h-full w-full items-center justify-center text-sm text-gray-500 dark:text-gray-400 rounded-lg border border-dashed border-gray-200 dark:border-gray-700">
                 {t("noDataAvailable")}
               </div>
             ) : (

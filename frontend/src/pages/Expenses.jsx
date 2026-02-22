@@ -191,7 +191,7 @@ const Expenses = () => {
           </button>
           <button
             onClick={toggleView}
-            className="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800/80 hover:bg-gray-200 dark:hover:bg-gray-700/80 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            className="hidden sm:inline-flex p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800/80 hover:bg-gray-200 dark:hover:bg-gray-700/80 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             aria-label={view === "card" ? t("expenses") : t("expenses")}
           >
             {view === "card" ? (
@@ -258,21 +258,31 @@ const Expenses = () => {
         </div>
       ) : (
         <>
-          {view === "card" ? (
+          <div className="sm:hidden">
             <ExpenseCards
               expenses={pageItems}
               onDelete={requestDelete}
               onEdit={setEditExpense}
               deletingId={deletingId}
             />
-          ) : (
-            <ExpenseTable
-              expenses={pageItems}
-              onDelete={requestDelete}
-              onEdit={setEditExpense}
-              deletingId={deletingId}
-            />
-          )}
+          </div>
+          <div className="hidden sm:block">
+            {view === "card" ? (
+              <ExpenseCards
+                expenses={pageItems}
+                onDelete={requestDelete}
+                onEdit={setEditExpense}
+                deletingId={deletingId}
+              />
+            ) : (
+              <ExpenseTable
+                expenses={pageItems}
+                onDelete={requestDelete}
+                onEdit={setEditExpense}
+                deletingId={deletingId}
+              />
+            )}
+          </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 text-xs text-gray-500 dark:text-gray-400">
             <span>
