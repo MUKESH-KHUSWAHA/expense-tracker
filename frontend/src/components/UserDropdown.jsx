@@ -60,7 +60,7 @@ const UserDropdown = () => {
 
       {open && (
         <div
-          className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-lg py-2 z-50 animate-dropdown-in origin-top-right"
+          className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-lg py-2 z-[9999] origin-top-right transition ease-out duration-150 animate-dropdown-in"
           role="menu"
         >
           <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">

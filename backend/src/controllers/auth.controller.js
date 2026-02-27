@@ -16,7 +16,8 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ email });
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const existingUser = await User.findOne({ email: normalizedEmail });
 
     if (existingUser) {
       return res.status(400).json({
@@ -27,7 +28,7 @@ export const registerUser = async (req, res) => {
 
     const user = await User.create({
       name,
-      email,
+      email: normalizedEmail,
       password, // hashed by pre-save hook
     });
 
@@ -62,21 +63,43 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email });
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Invalid credentials",
       });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    let isMatch = false;
+    const storedPassword = user.password || "";
+    const looksLikeBcryptHash = typeof storedPassword === "string" && storedPassword.startsWith("$2");
+
+    if (looksLikeBcryptHash) {
+      isMatch = await bcrypt.compare(password, storedPassword);
+    } else {
+      // Legacy support: older users may have plaintext passwords stored.
+      // If it matches, migrate to hashed password automatically.
+      isMatch = String(password) === String(storedPassword);
+      if (isMatch) {
+        user.password = password;
+        await user.save();
+      }
+    }
 
     if (!isMatch) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Invalid credentials",
+      });
+    }
+
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({
+        success: false,
+        message: "JWT_SECRET is not configured",
       });
     }
 

@@ -4,6 +4,7 @@ import rateLimit from "express-rate-limit";
 import expenseRoutes from "./routes/expense.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import requireAuth from "./middleware/auth.middleware.js";
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/expenses", expenseRoutes);
+app.use("/api/users", requireAuth, userRoutes);
 
 // Rate limiting for AI to prevent excessive costs/abuse
 const aiLimiter = rateLimit({

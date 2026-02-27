@@ -143,7 +143,7 @@ const AppLayout = () => {
       {/* Main content */}
       <div className="flex-1 flex flex-col lg:ml-64">
         {/* Topbar */}
-        <header className="h-16 shrink-0 border-b border-gray-200 dark:border-gray-800/80 bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm flex items-center justify-between px-4 lg:px-6">
+        <header className="relative z-50 h-16 shrink-0 border-b border-gray-200 dark:border-gray-800/80 bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm flex items-center justify-between px-4 lg:px-6">
           <div className="flex items-center gap-3">
             <button
               type="button"

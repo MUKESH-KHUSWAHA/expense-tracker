@@ -10,50 +10,53 @@ import AppLayout from "./layouts/AppLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { PreferencesProvider } from "./context/PreferencesContext";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const Analytics = lazy(() => import("./pages/Analytics"));
 
 const App = () => {
   return (
-    <AuthProvider>
-      <PreferencesProvider>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+    <ErrorBoundary>
+      <AuthProvider>
+        <PreferencesProvider>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="expenses" element={<Expenses />} />
             <Route
-              path="analytics"
+              path="/dashboard"
               element={
-                <Suspense
-                  fallback={
-                    <div className="flex flex-col items-center justify-center py-24">
-                      <div className="h-10 w-10 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-                      <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">Loading analytics...</p>
-                    </div>
-                  }
-                >
-                  <Analytics />
-                </Suspense>
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
               }
-            />
-            <Route path="settings" element={<Settings />} />
-          </Route>
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="expenses" element={<Expenses />} />
+              <Route
+                path="analytics"
+                element={
+                  <Suspense
+                    fallback={
+                      <div className="flex flex-col items-center justify-center py-24">
+                        <div className="h-10 w-10 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                        <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">Loading analytics...</p>
+                      </div>
+                    }
+                  >
+                    <Analytics />
+                  </Suspense>
+                }
+              />
+              <Route path="settings" element={<Settings />} />
+            </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </PreferencesProvider>
-    </AuthProvider>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </PreferencesProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 };
 
