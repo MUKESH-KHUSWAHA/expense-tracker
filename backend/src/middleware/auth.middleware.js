@@ -1,40 +1,61 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-const protect = async (req, res, next) => {
-  let token;
+const requireAuth = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+    const headerValue = typeof authHeader === "string" ? authHeader : "";
 
-  // 1️⃣ Check Authorization header
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
+    if (!headerValue.startsWith("Bearer ")) {
+      return res.status(401).json({
+        success: false,
+        message: "Not authorized, no token",
+      });
+    }
+
+    const token = headerValue.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Not authorized, no token",
+      });
+    }
+
+    let decoded;
     try {
-      // 2️⃣ Extract token
-      token = req.headers.authorization.split(" ")[1];
-
-      // 3️⃣ Verify token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // 4️⃣ Attach user to request (without password)
-      req.user = await User.findById(decoded.id).select("-password");
-
-      next(); // ✅ allow request
-    } catch (error) {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch {
       return res.status(401).json({
         success: false,
         message: "Not authorized, invalid token",
       });
     }
-  }
 
-  // 5️⃣ No token found
-  if (!token) {
-    return res.status(401).json({
+    const userId = decoded?.id || decoded?.userId;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Not authorized, invalid token",
+      });
+    }
+
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Not authorized, user not found",
+      });
+    }
+
+    req.user = user;
+    return next();
+  } catch (error) {
+    console.error("Auth middleware error:", error);
+    return res.status(500).json({
       success: false,
-      message: "Not authorized, no token",
+      message: "Server error",
     });
   }
 };
 
-export default protect;
+export default requireAuth;
